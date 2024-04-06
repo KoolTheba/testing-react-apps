@@ -2,19 +2,18 @@
 // http://localhost:3000/login
 
 import * as React from 'react'
-import faker from 'faker'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import {build, fake} from '@jackfranklin/test-data-bot'
 import Login from '../../components/login'
 
 // allow args overrides
-const buildLoginForm = (args) => {
-  return {
-    username: faker.internet.userName(),
-    password: faker.internet.password(),
-    ...args
+const buildLoginForm = build({
+  fields: {
+    username: fake(faker => faker.internet.userName()),
+    password: fake(faker => faker.internet.password())
   }
-}
+})
 
 test('submitting the form calls onSubmit with username and password', async () => {
   let submittedData
