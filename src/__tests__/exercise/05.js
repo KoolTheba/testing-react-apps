@@ -35,3 +35,15 @@ test(`logging in displays the user's username`, async () => {
 
   expect(screen.getByText(username)).toBeInTheDocument()
 })
+
+test(`should display error on error login missing username`, async () => {
+  render(<Login />)
+  const {password} = buildLoginForm()
+
+  await userEvent.type(screen.getByLabelText(/password/i), password)
+  
+  await userEvent.click(screen.getByRole('button', {name: /submit/i}))
+  
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+  expect(screen.getByRole('alert')).toHaveTextContent(/username required/i)
+})
