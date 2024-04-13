@@ -2,7 +2,7 @@
 // http://localhost:3000/counter-hook
 
 import * as React from 'react'
-import {render, screen, act} from '@testing-library/react'
+import {render, screen, act, renderHook} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import useCounter from '../../components/use-counter'
 
@@ -67,10 +67,31 @@ test('allows customization of the initial count', () => {
 
 test('allows customization of the step', () => {
   const result = setup({initialProps: {initialCount: 0, step: 2}})
-  
+
   expect(result.current.count).toBe(0)
   act(() => result.current.increment())
   expect(result.current.count).toBe(2)
   act(() => result.current.decrement())
   expect(result.current.count).toBe(0)
+})
+
+test('allow customization using renderHook', () => {
+  const {result} = renderHook(useCounter, {initialProps: {initialCount: 0, step: 2}})
+
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(2)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
+})
+
+test('the step can be changed', () => {
+  const {result, rerender} = renderHook(useCounter, {initialProps: {initialCount: 0, step: 2}})
+
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(2)
+  rerender({step: 1})
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(1)
 })
